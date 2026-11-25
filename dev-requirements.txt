@@ -1,0 +1,7 @@
+hatchling
+build
+twine
+packaging
+tomlkit
+xh-py-project-versioning
+py-secrets-xethhung12 >= 0.0.0

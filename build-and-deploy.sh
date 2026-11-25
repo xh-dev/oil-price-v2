@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+BASEDIR=$(dirname "$0")
+pushd "$BASEDIR"
+./build.sh
+twine upload dist/*
+popd

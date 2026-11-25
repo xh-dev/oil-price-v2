@@ -1,0 +1,71 @@
+{# One language of the page. Variables: t, report, dates, products, day_label #}
+  <header>
+    <div class="wrap">
+      <h1>⛽ {{ t.title }}</h1>
+      <p>{{ t.updated }} {{ report.fetched_at.strftime("%Y-%m-%d %H:%M") }} ·
+        {{ t.source }}: <a href="{{ report.source_url }}">{{ t.source_name }}</a></p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>{{ t.rank_title }}</h2>
+      <p class="hint">{{ t.rank_hint }}</p>
+      <div class="scroll">
+      <table class="rank">
+        <thead>
+          <tr>
+            <th>#</th><th>{{ t.product }}</th><th>{{ t.pump }}</th>
+            {% for d in dates %}<th class="sortable{% if loop.first %} sorted{% endif %}" data-col="{{ loop.index0 }}">{{ day_label(d) }}</th>{% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for product, prices, rows in products %}
+          <tr{% if loop.first %} class="first"{% endif %}>
+            <td><span class="rank-no">{{ loop.index }}</span></td>
+            <td class="name"><strong>{{ product.company }}</strong> {{ product.product }}<small>{{ product.fuel_type }}</small></td>
+            <td class="price">{% if product.pump_price is not none %}${{ "%.2f"|format(product.pump_price) }}{% else %}<span class="na">-</span>{% endif %}</td>
+            {% for p in prices %}
+            <td class="price" data-sort="{{ p.price if p.price is not none else 9999 }}">
+              {% if p.price is not none %}${{ "%.2f"|format(p.price) }}{% if p.discount %}<small class="off">-${{ "%.2f"|format(p.discount) }}</small>{% endif %}{% if p.requirement %}<small>{{ p.requirement }}</small>{% endif %}{% else %}<span class="na">-</span>{% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    {% for product, prices, rows in products %}
+    <section class="card">
+      <div class="head">
+        <h2>{{ product.name }}</h2>
+        <span class="pump">{{ t.pump_price }} {% if product.pump_price is not none %}<strong>${{ "%.2f"|format(product.pump_price) }}/L</strong>{% else %}-{% endif %}</span>
+      </div>
+      <div class="scroll">
+      <table class="detail">
+        <thead>
+          <tr><th class="cat"></th>{% for d in dates %}<th>{{ day_label(d) }}</th>{% endfor %}</tr>
+        </thead>
+        <tbody>
+          <tr class="net">
+            <th class="cat">{{ t.best }}</th>
+            {% for p in prices %}<td class="price">{% if p.price is not none %}${{ "%.2f"|format(p.price) }}{% if p.discount %}<small class="off">-${{ "%.2f"|format(p.discount) }}</small>{% endif %}{% if p.requirement %}<small>{{ p.requirement }}</small>{% endif %}{% else %}-{% endif %}</td>{% endfor %}
+          </tr>
+          {% for category, days in rows %}
+          <tr>
+            <th class="cat">{{ category }}</th>
+            {% for items in days %}
+            <td>{% if items %}<ul>{% for item in items %}<li class="m-{{ item.model }}"><span class="chip">{{ t.models[item.model] }}</span>{{ item.text }}</li>{% endfor %}</ul>{% endif %}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+    {% endfor %}
+  </main>
+
+  <footer>{{ t.footer }}</footer>

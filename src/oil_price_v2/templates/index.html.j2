@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="{{ langs[0].t.html_lang }}" data-lang="{{ langs[0].code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ langs[0].t.title }}</title>
+  <style>
+    :root {
+      --bg: #f4f6fb; --card: #ffffff; --text: #1e293b; --muted: #64748b; --line: #e2e8f0;
+      --accent: #0f766e; --accent-soft: #ccfbf1; --head: #f1f5f9;
+      --discount: #047857; --discount-bg: #d1fae5;
+      --points: #1d4ed8; --points-bg: #dbeafe;
+      --voucher: #b45309; --voucher-bg: #fef3c7;
+      --upgrade: #7e22ce; --upgrade-bg: #f3e8ff;
+      --other: #475569; --other-bg: #e2e8f0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8; --line: #334155;
+        --accent: #2dd4bf; --accent-soft: #134e4a; --head: #273449;
+        --discount: #6ee7b7; --discount-bg: #064e3b;
+        --points: #93c5fd; --points-bg: #1e3a8a;
+        --voucher: #fcd34d; --voucher-bg: #78350f;
+        --upgrade: #d8b4fe; --upgrade-bg: #581c87;
+        --other: #cbd5e1; --other-bg: #334155;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; }
+    header { background: linear-gradient(135deg, #0f766e, #0369a1); color: #fff; padding: 2rem 1rem 3.5rem; }
+    header .wrap, main { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
+    header h1 { margin: 0 0 .25rem; font-size: 1.8rem; }
+    header p { margin: 0; opacity: .9; font-size: .9rem; }
+    header a { color: #fff; }
+    main { margin-top: -2.2rem; padding-bottom: 2rem; }
+    .card { background: var(--card); border-radius: 14px; box-shadow: 0 2px 10px rgba(15, 23, 42, .08); padding: 1.1rem 1.2rem; margin-bottom: 1.4rem; }
+    .card h2 { margin: 0 0 .2rem; font-size: 1.15rem; }
+    .hint { margin: 0 0 .8rem; color: var(--muted); font-size: .82rem; }
+    .scroll { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: .5rem .6rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    thead th { background: var(--head); font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); white-space: nowrap; position: sticky; top: 0; }
+    tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover td, tbody tr:hover th { background: color-mix(in srgb, var(--accent-soft) 35%, transparent); }
+
+    /* ranking table */
+    table.rank th.sortable { cursor: pointer; user-select: none; }
+    table.rank th.sortable::after { content: " \21C5"; opacity: .4; }
+    table.rank th.sorted::after { content: " \25B2"; opacity: 1; color: var(--accent); }
+    table.rank td.name { min-width: 14rem; }
+    table.rank td.name small { display: block; color: var(--muted); }
+    .rank-no { display: inline-block; width: 1.6rem; height: 1.6rem; line-height: 1.6rem; text-align: center; border-radius: 50%; background: var(--head); font-size: .8rem; margin-right: .4rem; }
+    tr.first .rank-no { background: var(--accent); color: #fff; }
+    .price { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .price small { display: block; font-weight: 400; color: var(--muted); font-size: .72rem; }
+    .price small.off { color: var(--discount); font-weight: 600; }
+    .cheapest { color: var(--discount); }
+    .na { color: var(--muted); }
+
+    /* detail tables */
+    .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .5rem; margin-bottom: .6rem; }
+    .pump { color: var(--muted); font-size: .85rem; }
+    .pump strong { color: var(--text); }
+    table.detail { table-layout: fixed; min-width: 900px; }
+    table.detail th.cat { width: 9.5rem; background: var(--head); font-size: .8rem; }
+    table.detail td { font-size: .8rem; }
+    table.detail tr.net td, table.detail tr.net th { background: var(--accent-soft); }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { margin: 0 0 .3rem; }
+    .chip { display: inline-block; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; padding: 0 .4rem; border-radius: 999px; margin-right: .3rem; vertical-align: 1px; }
+    .m-discount .chip { color: var(--discount); background: var(--discount-bg); }
+    .m-points .chip { color: var(--points); background: var(--points-bg); }
+    .m-voucher .chip { color: var(--voucher); background: var(--voucher-bg); }
+    .m-upgrade .chip { color: var(--upgrade); background: var(--upgrade-bg); }
+    .m-other .chip { color: var(--other); background: var(--other-bg); }
+    footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 1rem; }
+    /* language switch: every language is in the page, only the chosen one is shown */
+    .lang-block { display: none; }
+    html[data-lang="tc"] .lang-block[data-lang="tc"], html[data-lang="en"] .lang-block[data-lang="en"] { display: block; }
+    .lang-switch { position: fixed; top: .7rem; right: .8rem; z-index: 10; display: flex; gap: .2rem; background: rgba(255, 255, 255, .22); padding: .2rem; border-radius: 999px; backdrop-filter: blur(6px); }
+    .lang-switch button { border: 0; background: transparent; color: #fff; font: inherit; font-size: .85rem; padding: .2rem .8rem; border-radius: 999px; cursor: pointer; }
+    html[data-lang="tc"] .lang-switch button[data-set-lang="tc"], html[data-lang="en"] .lang-switch button[data-set-lang="en"] { background: #fff; color: #0f766e; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <nav class="lang-switch">
+    {% for l in langs %}<button type="button" data-set-lang="{{ l.code }}">{{ l.t.lang_name }}</button>{% endfor %}
+  </nav>
+  {% for l in langs %}
+  <div class="lang-block" data-lang="{{ l.code }}" data-title="{{ l.t.title }}" data-html-lang="{{ l.t.html_lang }}">
+  {% with t=l.t, report=l.report, dates=l.dates, products=l.products, day_label=l.day_label %}{% include "_content.html.j2" %}{% endwith %}
+  </div>
+  {% endfor %}
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var blocks = Array.prototype.slice.call(document.querySelectorAll(".lang-block"));
+      // Language switch. The first language in the page is the default; the choice is remembered.
+      function setLang(code) {
+        var block = blocks.filter(function (b) { return b.dataset.lang === code; })[0] || blocks[0];
+        root.setAttribute("data-lang", block.dataset.lang);
+        root.setAttribute("lang", block.dataset.htmlLang);
+        document.title = block.dataset.title;
+        try { localStorage.setItem("oil-price-lang", block.dataset.lang); } catch (e) {}
+      }
+      document.querySelectorAll("[data-set-lang]").forEach(function (btn) {
+        btn.addEventListener("click", function () { setLang(btn.dataset.setLang); });
+      });
+      var saved = null;
+      try { saved = localStorage.getItem("oil-price-lang"); } catch (e) {}
+      var wanted = new URLSearchParams(location.search).get("lang") || saved;
+      if (wanted) setLang(wanted);
+      // Click a day in a ranking table to sort by that day's price (lowest first).
+      document.querySelectorAll("table.rank").forEach(function (table) {
+        var body = table.tBodies[0];
+        var heads = table.querySelectorAll("th.sortable");
+        heads.forEach(function (th) {
+          th.addEventListener("click", function () {
+            var col = parseInt(th.dataset.col, 10);
+            var rows = Array.prototype.slice.call(body.rows);
+            rows.sort(function (a, b) {
+              return parseFloat(a.querySelectorAll("td[data-sort]")[col].dataset.sort) -
+                     parseFloat(b.querySelectorAll("td[data-sort]")[col].dataset.sort);
+            });
+            rows.forEach(function (row, i) {
+              row.classList.toggle("first", i === 0);
+              row.querySelector(".rank-no").textContent = i + 1;
+              body.appendChild(row);
+            });
+            heads.forEach(function (h) { h.classList.remove("sorted"); });
+            th.classList.add("sorted");
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
