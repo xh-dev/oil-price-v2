@@ -7,10 +7,10 @@
 import logging
 from datetime import datetime
 
-from oil_price_v2.interpreters import get_interpreter
-from oil_price_v2.models import WEEKDAYS, DiscountRecord, PriceReport, ProductPrices, validate_report
-from oil_price_v2.today_page import parse_pump_prices, product_key
-from oil_price_v2.weekly_page import parse_weekly
+from oil_price_v2_xethhung12.interpreters import get_interpreter
+from oil_price_v2_xethhung12.models import WEEKDAYS, DiscountRecord, PriceReport, ProductPrices, validate_report
+from oil_price_v2_xethhung12.today_page import parse_pump_prices, product_key
+from oil_price_v2_xethhung12.weekly_page import parse_weekly
 
 log = logging.getLogger(__name__)
 

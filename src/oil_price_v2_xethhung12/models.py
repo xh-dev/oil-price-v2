@@ -12,7 +12,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from oil_price_v2.errors import OilPriceError
+from oil_price_v2_xethhung12.errors import OilPriceError
 
 Weekday = Literal["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 WEEKDAYS: list[str] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]

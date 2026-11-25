@@ -4,8 +4,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from oil_price_v2 import config
-from oil_price_v2.errors import OilPriceError
+from oil_price_v2_xethhung12 import config
+from oil_price_v2_xethhung12.errors import OilPriceError
 
 log = logging.getLogger(__name__)
 

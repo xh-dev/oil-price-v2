@@ -2,7 +2,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from oil_price_v2.errors import OilPriceError
+from oil_price_v2_xethhung12.errors import OilPriceError
 
 
 def read_text(path: Path, created_by: str) -> str:

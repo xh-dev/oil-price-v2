@@ -12,6 +12,6 @@ if os.getenv("DEV") is not None:
 
         os.environ.update(load_secrets(file_path=secrets_file, create_if_missing=False))
 
-from oil_price_v2._cmd import run
+from oil_price_v2_xethhung12._cmd import run
 if __name__ == "__main__":
     raise SystemExit(run.main())

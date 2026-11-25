@@ -12,7 +12,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from oil_price_v2.models import DiscountRecord, PriceReport, ProductPrices
+from oil_price_v2_xethhung12.models import DiscountRecord, PriceReport, ProductPrices
 
 # Plain HTML template, edit it to change the look of the page.
 DEFAULT_TEMPLATE_DIR = Path(__file__).parent / "templates"

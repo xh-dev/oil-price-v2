@@ -4,7 +4,7 @@ import time
 
 import httpx
 
-from oil_price_v2.errors import OilPriceError
+from oil_price_v2_xethhung12.errors import OilPriceError
 
 log = logging.getLogger(__name__)
 

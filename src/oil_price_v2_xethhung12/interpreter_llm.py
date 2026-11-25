@@ -9,11 +9,11 @@ import logging
 import os
 from pathlib import Path
 
-from oil_price_v2.config import ENV_LLM_BASE_URL, ENV_LLM_MODEL, ENV_LLM_NUM_CTX, ENV_LLM_PROVIDER
-from oil_price_v2.errors import OilPriceError
-from oil_price_v2.interpreter_rules import normalise_benefit
-from oil_price_v2.models import Benefit, CellDecodings, benefit
-from oil_price_v2.weekly_page import ProductTable
+from oil_price_v2_xethhung12.config import ENV_LLM_BASE_URL, ENV_LLM_MODEL, ENV_LLM_NUM_CTX, ENV_LLM_PROVIDER
+from oil_price_v2_xethhung12.errors import OilPriceError
+from oil_price_v2_xethhung12.interpreter_rules import normalise_benefit
+from oil_price_v2_xethhung12.models import Benefit, CellDecodings, benefit
+from oil_price_v2_xethhung12.weekly_page import ProductTable
 
 log = logging.getLogger(__name__)
 

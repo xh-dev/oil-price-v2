@@ -12,7 +12,7 @@ from datetime import date, datetime
 
 from bs4 import BeautifulSoup, Tag
 
-from oil_price_v2.errors import OilPriceError
+from oil_price_v2_xethhung12.errors import OilPriceError
 
 # --- selectors: change here when the site changes ---
 HEAD_DATES = "table.tb__headtable thead th .tb__head-sub"

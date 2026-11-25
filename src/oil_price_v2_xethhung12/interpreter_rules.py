@@ -7,8 +7,8 @@ interpreter is the fallback that needs no maintenance.
 """
 import re
 
-from oil_price_v2.models import WEEKDAYS, Benefit, benefit, criteria_of
-from oil_price_v2.weekly_page import Cell, ProductTable
+from oil_price_v2_xethhung12.models import WEEKDAYS, Benefit, benefit, criteria_of
+from oil_price_v2_xethhung12.weekly_page import Cell, ProductTable
 
 _DAY_NAMES = {d.lower(): d[:3] for d in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]}
 _DAY = "(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)"

@@ -3,3 +3,4 @@ vault.kv
 src/**/__pycache__/**
 dist
 .idea
+export-deployment-keys.sh

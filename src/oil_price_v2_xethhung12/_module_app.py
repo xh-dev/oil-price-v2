@@ -12,14 +12,14 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from oil_price_v2 import config
-from oil_price_v2.decoder import build_report
-from oil_price_v2.dockerfile import gen_dockerfile  # noqa: F401  (a command of its own, see dockerfile.py)
-from oil_price_v2.errors import OilPriceError
-from oil_price_v2.fetcher import fetch_html
-from oil_price_v2.files import read_text, write_text_atomic
-from oil_price_v2.models import PriceReport
-from oil_price_v2.renderer import render
+from oil_price_v2_xethhung12 import config
+from oil_price_v2_xethhung12.decoder import build_report
+from oil_price_v2_xethhung12.dockerfile import gen_dockerfile  # noqa: F401  (a command of its own, see dockerfile.py)
+from oil_price_v2_xethhung12.errors import OilPriceError
+from oil_price_v2_xethhung12.fetcher import fetch_html
+from oil_price_v2_xethhung12.files import read_text, write_text_atomic
+from oil_price_v2_xethhung12.models import PriceReport
+from oil_price_v2_xethhung12.renderer import render
 
 log = logging.getLogger(__name__)
 

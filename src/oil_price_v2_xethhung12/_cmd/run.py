@@ -3,10 +3,10 @@ import logging
 import sys
 from pathlib import Path
 
-import oil_price_v2 as project
-from oil_price_v2 import config
-from oil_price_v2.errors import OilPriceError
-from oil_price_v2.interpreters import INTERPRETERS
+import oil_price_v2_xethhung12 as project
+from oil_price_v2_xethhung12 import config
+from oil_price_v2_xethhung12.errors import OilPriceError
+from oil_price_v2_xethhung12.interpreters import INTERPRETERS
 
 
 def build_parser() -> argparse.ArgumentParser:

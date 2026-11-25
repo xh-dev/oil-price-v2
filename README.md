@@ -1,4 +1,4 @@
-# oil_price_v2
+# oil-price-v2-xethhung12
 
 Version 2 of [oil-price-hk](https://github.com/xh-dev/oil-price-hk). It collects Hong Kong fuel
 discount information from the Consumer Council
@@ -33,7 +33,10 @@ needs a code change. A rule based reader (no AI) is kept as an alternative.
 
 ### Command line
 
-Entry point: `oil-price-v2 <command> [options]` (or `python -m oil_price_v2 <command>`).
+Install from PyPI with `pip install oil-price-v2-xethhung12`. The import package is `oil_price_v2_xethhung12`;
+the installed command is still `oil-price-v2`.
+
+Entry point: `oil-price-v2 <command> [options]` (or `python -m oil_price_v2_xethhung12 <command>`).
 
 | Command | Description | Reads | Writes |
 |---|---|---|---|
@@ -158,7 +161,7 @@ time and fills a small schema. One LLM call per product (about 5-9 cells).
 ### Layout
 
 ```text
-src/oil_price_v2/
+src/oil_price_v2_xethhung12/
 ├── __main__.py            # dev entry (DEV handling)
 ├── _cmd/run.py            # argparse parser; calls the functions below
 ├── _module_app.py         # fetch / decode / gen_html / refresh (one function per command)
@@ -284,7 +287,7 @@ The remaining sections describe the generated project skeleton and its tooling.
 ├── scripts/
 │   └── sync-requirements.py
 └── src/
-    └── oil_price_v2/
+    └── oil_price_v2_xethhung12/
         ├── __init__.py
         ├── __main__.py
         ├── _module_app.py
@@ -305,7 +308,7 @@ The remaining sections describe the generated project skeleton and its tooling.
 - `_module_app.py` contains the functions `fetch`, `decode`, `gen_html` and
   `refresh`, exported by `__init__.py`. `_cmd/run.py` parses the command line,
   calls them, and is the installed command's entry point.
-- `__main__.py` supports `python -m oil_price_v2` and calls the same
+- `__main__.py` supports `python -m oil_price_v2_xethhung12` and calls the same
   command entry point. Its optional development secrets loading is described
   below.
 
@@ -371,7 +374,7 @@ restricted to development.
 
 Install the development tools and dependencies with
 `./install-dependencies.sh`. In a debugger, run
-`src/oil_price_v2/__main__.py` as a Python file, set the working
+`src/oil_price_v2_xethhung12/__main__.py` as a Python file, set the working
 directory to the project root, and set `DEV=1` in the debug configuration.
 The `DEV` block adds the `src` directory to `sys.path`, allowing imports from
 the source tree, and loads `env.sec` if present (see below). `DEV` is enabled
@@ -381,7 +384,7 @@ Python debugger switch.
 Alternatively, make the source package discoverable before starting Python:
 
 ```shell
-DEV=1 PYTHONPATH=src python -m oil_price_v2
+DEV=1 PYTHONPATH=src python -m oil_price_v2_xethhung12
 ```
 
 An editable installation (`python -m pip install -e .`) also makes the source
@@ -403,14 +406,14 @@ installer creates `oil-price-v2` from this configuration:
 
 ```toml
 [project.scripts]
-oil-price-v2 = "oil_price_v2._cmd.run:main"
+oil-price-v2 = "oil_price_v2_xethhung12._cmd.run:main"
 ```
 
 The wheel is an installation archive, not a command that runs by itself. The
 installed command invokes `_cmd.run.main` directly and does not execute
 `__main__.py`, so it neither changes `sys.path` nor loads `env.sec`, even if
 `DEV` is set. Supply release configuration through the environment or your
-own configuration mechanism. Running `python -m oil_price_v2` after
+own configuration mechanism. Running `python -m oil_price_v2_xethhung12` after
 installation still uses `__main__.py` and its `DEV` behavior.
 
 `./build-and-deploy.sh` builds and uploads the distributions with Twine.
@@ -458,7 +461,7 @@ preserve TOML formatting.
 ## Execution
 Run through python interpreter:
 ```shell
-python -m oil_price_v2
+python -m oil_price_v2_xethhung12
 ```
 
 Run through python project script
@@ -467,7 +470,7 @@ oil-price-v2
 ```
 
 ### Environment secrets
-When running `python -m oil_price_v2` with `DEV` set, the application
+When running `python -m oil_price_v2_xethhung12` with `DEV` set, the application
 loads key-value pairs from `env.sec` in the current working directory into
 the process environment if the file exists, replacing existing values with
 the same names. The file must be encrypted using
@@ -477,7 +480,7 @@ The encryption key is resolved through the default OS keyring, or the
 
 ```shell
 py-secrets-xethhung12 -f env.sec set MY_SETTING my-value
-DEV=1 python -m oil_price_v2
+DEV=1 python -m oil_price_v2_xethhung12
 ```
 
 Without `DEV`, or when `env.sec` is absent, no secrets are loaded. The
