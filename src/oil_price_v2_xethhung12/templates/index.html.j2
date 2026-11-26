@@ -36,19 +36,33 @@
     .card { background: var(--card); border-radius: 14px; box-shadow: 0 2px 10px rgba(15, 23, 42, .08); padding: 1.1rem 1.2rem; margin-bottom: 1.4rem; }
     .card h2 { margin: 0 0 .2rem; font-size: 1.15rem; }
     .hint { margin: 0 0 .8rem; color: var(--muted); font-size: .82rem; }
-    .scroll { overflow-x: auto; }
-    table { border-collapse: collapse; width: 100%; }
+    /* The scroll box scrolls both ways, so sticky header / columns stay inside it. */
+    .scroll { overflow: auto; -webkit-overflow-scrolling: touch; }
+    .scroll.tall { max-height: 80vh; }
+    table { border-collapse: separate; border-spacing: 0; width: 100%; }
     th, td { padding: .5rem .6rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
-    thead th { background: var(--head); font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); white-space: nowrap; position: sticky; top: 0; }
+    thead th { background: var(--head); font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); white-space: nowrap; position: sticky; top: 0; z-index: 2; }
     tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
-    tbody tr:hover td, tbody tr:hover th { background: color-mix(in srgb, var(--accent-soft) 35%, transparent); }
+    /* opaque, so sticky cells hide what scrolls under them */
+    tbody tr:hover td, tbody tr:hover th { background: color-mix(in srgb, var(--accent-soft) 35%, var(--card)); }
 
-    /* ranking table */
+    /* ranking table: header row, rank, product and pump price stay visible while scrolling */
+    table.rank { min-width: 100%; width: max-content; }
     table.rank th.sortable { cursor: pointer; user-select: none; }
     table.rank th.sortable::after { content: " \21C5"; opacity: .4; }
     table.rank th.sorted::after { content: " \25B2"; opacity: 1; color: var(--accent); }
-    table.rank td.name { min-width: 14rem; }
+    table.rank th.sortable, table.rank td.day { min-width: 6.5rem; }
+    table.rank .c-no, table.rank .c-name, table.rank .c-pump { position: sticky; background: var(--card); z-index: 1; }
+    table.rank thead .c-no, table.rank thead .c-name, table.rank thead .c-pump { background: var(--head); z-index: 3; }
+    table.rank .c-no { left: 0; width: 2.8rem; min-width: 2.8rem; max-width: 2.8rem; }
+    table.rank .c-name { left: 2.8rem; width: 9rem; min-width: 9rem; max-width: 9rem; }
+    table.rank .c-pump { left: 11.8rem; min-width: 4.8rem; box-shadow: 3px 0 4px -2px rgba(15, 23, 42, .25); }
     table.rank td.name small { display: block; color: var(--muted); }
+    @media (max-width: 640px) {
+      table.rank .c-no { display: none; }
+      table.rank .c-name { left: 0; width: 7rem; min-width: 7rem; max-width: 7rem; }
+      table.rank .c-pump { left: 7rem; min-width: 4.2rem; }
+    }
     .rank-no { display: inline-block; width: 1.6rem; height: 1.6rem; line-height: 1.6rem; text-align: center; border-radius: 50%; background: var(--head); font-size: .8rem; margin-right: .4rem; }
     tr.first .rank-no { background: var(--accent); color: #fff; }
     .price { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -62,7 +76,9 @@
     .pump { color: var(--muted); font-size: .85rem; }
     .pump strong { color: var(--text); }
     table.detail { table-layout: fixed; min-width: 900px; }
-    table.detail th.cat { width: 9.5rem; background: var(--head); font-size: .8rem; }
+    table.detail th.cat { width: 9.5rem; background: var(--head); font-size: .8rem; position: sticky; left: 0; z-index: 1; box-shadow: 3px 0 4px -2px rgba(15, 23, 42, .2); }
+    table.detail thead th.cat { z-index: 3; }
+    @media (max-width: 640px) { table.detail th.cat { width: 6.5rem; } }
     table.detail td { font-size: .8rem; }
     table.detail tr.net td, table.detail tr.net th { background: var(--accent-soft); }
     ul { list-style: none; margin: 0; padding: 0; }
@@ -77,7 +93,8 @@
     /* language switch: every language is in the page, only the chosen one is shown */
     .lang-block { display: none; }
     html[data-lang="tc"] .lang-block[data-lang="tc"], html[data-lang="en"] .lang-block[data-lang="en"] { display: block; }
-    .lang-switch { position: fixed; top: .7rem; right: .8rem; z-index: 10; display: flex; gap: .2rem; background: rgba(255, 255, 255, .22); padding: .2rem; border-radius: 999px; backdrop-filter: blur(6px); }
+    /* solid background: stays readable when the page behind it is white (after scrolling) */
+    .lang-switch { position: fixed; top: .7rem; right: .8rem; z-index: 20; display: flex; gap: .2rem; background: #0f766e; padding: .2rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(15, 23, 42, .35); }
     .lang-switch button { border: 0; background: transparent; color: #fff; font: inherit; font-size: .85rem; padding: .2rem .8rem; border-radius: 999px; cursor: pointer; }
     html[data-lang="tc"] .lang-switch button[data-set-lang="tc"], html[data-lang="en"] .lang-switch button[data-set-lang="en"] { background: #fff; color: #0f766e; font-weight: 700; }
   </style>
