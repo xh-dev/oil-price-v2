@@ -5,3 +5,4 @@ packaging
 tomlkit
 xh-py-project-versioning
 py-secrets-xethhung12 >= 0.0.0
+py-secrets-xethhung12

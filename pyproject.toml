@@ -1,31 +1,27 @@
 [build-system]
-requires = ["hatchling >= 1.26"]
+requires = [ "hatchling >= 1.26",]
 build-backend = "hatchling.build"
 
-
 [project]
-name = "oil-price-v2-xethhung12"  # PyPI distribution name; the import package is `oil_price_v2_xethhung12`
-version = "0.0.1"
-authors = [
-  { name="Xeth Hung", email="admin@xethh.me" },
-]
+name = "oil-price-v2-xethhung12"
+version = "0.0.2"
 description = "Hong Kong fuel discount data: fetches the Consumer Council pages, decodes them to station/weekday/benefit-level JSON, and publishes a static bilingual (TC/EN) HTML page."
 readme = "README.md"
 requires-python = ">=3.11"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
+classifiers = [ "Programming Language :: Python :: 3", "Operating System :: OS Independent",]
 license = "GPL-3.0-only"
-license-files = ["LICEN[CS]E*"]
+license-files = [ "LICEN[CS]E*",]
 dependencies = ["langchain>=0.3", "langchain-ollama>=0.3", "langchain-openai>=0.3", "pydantic>=2", "httpx>=0.27", "beautifulsoup4>=4.12", "jinja2>=3.1"]
+[[project.authors]]
+name = "Xeth Hung"
+email = "admin@xethh.me"
 
 [project.urls]
 Homepage = "https://github.com/xh-dev/oil-price-v2"
 Issues = "https://github.com/xh-dev/oil-price-v2/issues"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/oil_price_v2_xethhung12"]
-
 [project.scripts]
-oil-price-v2="oil_price_v2_xethhung12._cmd.run:main"
+oil-price-v2 = "oil_price_v2_xethhung12._cmd.run:main"
+
+[tool.hatch.build.targets.wheel]
+packages = [ "src/oil_price_v2_xethhung12",]

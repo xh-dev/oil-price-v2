@@ -13,7 +13,8 @@ from datetime import datetime
 from pathlib import Path
 
 from oil_price_v2_xethhung12 import config
-from oil_price_v2_xethhung12.decoder import build_report
+from oil_price_v2_xethhung12.consistency import compare_all
+from oil_price_v2_xethhung12.decoder import ReportBuilder
 from oil_price_v2_xethhung12.dockerfile import gen_dockerfile  # noqa: F401  (a command of its own, see dockerfile.py)
 from oil_price_v2_xethhung12.errors import OilPriceError
 from oil_price_v2_xethhung12.fetcher import fetch_html
@@ -64,24 +65,31 @@ def decode(
     lang: str = config.DEFAULT_LANG,
     decoder: str = config.DEFAULT_DECODER,
     decoded_dir: Path = config.DEFAULT_DECODED_DIR,
+    verify: bool = True,
+    fix_rounds: int = config.DEFAULT_FIX_ROUNDS,
     **decoder_options,
 ) -> list[Path]:
     """Decode the HTML files into one structured JSON file per language.
 
     decoder_options (provider, model, base_url, prompt_file) are passed to the LLM decoder.
     `output` can only be used with a single language.
+
+    With several languages and `verify`, the languages are compared (see consistency.py). Products
+    that differ are decoded again, at most `fix_rounds` times; if they still differ, nothing is written
+    and an error lists the differences. The rules decoder only knows English, so it is not verified.
     """
     work_dir = Path(work_dir)
     langs = _langs(lang)
     if output and len(langs) > 1:
         raise OilPriceError("--output can only be used with a single --lang.")
 
-    written: list[Path] = []
+    builders: dict[str, ReportBuilder] = {}
+    reports: dict[str, PriceReport] = {}
     for lg in langs:
         weekly_path = work_dir / config.WEEKLY_HTML_NAME.format(lang=lg)
         weekly_html = read_text(weekly_path, created_by="fetch")
         today_html = read_text(work_dir / config.TODAY_HTML_NAME.format(lang=lg), created_by="fetch")
-        report = build_report(
+        builders[lg] = ReportBuilder(
             weekly_html=weekly_html,
             today_html=today_html,
             fetched_at=datetime.fromtimestamp(weekly_path.stat().st_mtime).astimezone(),
@@ -90,10 +98,39 @@ def decode(
             lang=lg,
             **decoder_options,
         )
+        reports[lg] = builders[lg].build()
+
+    if verify and len(langs) > 1 and decoder != "rules":
+        _verify_languages(builders, reports, fix_rounds)
+
+    written: list[Path] = []
+    for lg, report in reports.items():
         target = Path(output) if output else Path(decoded_dir) / config.PRICES_JSON_NAME.format(lang=lg)
         written.append(write_text_atomic(target, report.model_dump_json(indent=2) + "\n"))
         log.info("[%s] Decoded %d products, %d records", lg, len(report.products), sum(len(p.discounts) for p in report.products))
     return written
+
+
+def _verify_languages(builders: dict[str, ReportBuilder], reports: dict[str, PriceReport], fix_rounds: int) -> None:
+    """Compare the languages; decode mismatching products again until they agree or the rounds run out."""
+    for round_no in range(fix_rounds + 1):
+        found = compare_all(reports, config.LANGS)
+        if not found:
+            log.info("Languages agree (checked after %d fix round(s)).", round_no)
+            return
+        for msg in found.messages():
+            log.warning("Mismatch: %s", msg)
+        if found.fatal:
+            raise OilPriceError("Languages disagree in a way decoding again cannot fix:\n  " + "\n  ".join(found.fatal))
+        if round_no == fix_rounds:
+            break
+        log.info("Fix round %d/%d: decoding %d mismatching product(s) again", round_no + 1, fix_rounds, len(found.products))
+        for index in found.products:
+            for lg in reports:
+                builders[lg].redecode(reports[lg], index)
+    raise OilPriceError(
+        f"Languages still disagree after {fix_rounds} fix round(s); nothing was written:\n  " + "\n  ".join(found.messages())
+    )
 
 
 def gen_html(
@@ -133,11 +170,13 @@ def refresh(
     out_dir: Path = config.DEFAULT_OUT_DIR,
     decoder: str = config.DEFAULT_DECODER,
     decoded_dir: Path = config.DEFAULT_DECODED_DIR,
+    verify: bool = True,
+    fix_rounds: int = config.DEFAULT_FIX_ROUNDS,
     **decoder_options,
 ) -> Path:
     """fetch + decode + gen-html. Stops at the first failure."""
     fetch(site=site, lang=lang, work_dir=work_dir)
-    prices = decode(work_dir=work_dir, site=site, lang=lang, decoder=decoder, decoded_dir=decoded_dir, **decoder_options)
+    prices = decode(work_dir=work_dir, site=site, lang=lang, decoder=decoder, decoded_dir=decoded_dir, verify=verify, fix_rounds=fix_rounds, **decoder_options)
     return gen_html(inputs=prices, out_dir=out_dir)
 
 

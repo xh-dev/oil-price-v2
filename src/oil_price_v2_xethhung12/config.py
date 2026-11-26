@@ -17,6 +17,7 @@ PRICES_JSON_NAME = "prices.{lang}.json" # written by `decode`, read by `gen-html
 SITE_HTML_NAME = "index.html"    # written by `gen-html`
 
 DEFAULT_DECODER = "llm"          # see interpreters.py for the available names
+DEFAULT_FIX_ROUNDS = 3           # times `decode` decodes mismatching products again before giving up
 
 # Environment variables used by the LLM interpreter.
 ENV_LLM_PROVIDER = "OIL_PRICE_LLM_PROVIDER"

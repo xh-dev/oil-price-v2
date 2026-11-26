@@ -25,6 +25,8 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--model", help=f"LLM model name (default: ${config.ENV_LLM_MODEL})")
             p.add_argument("--base-url", help=f"LLM server address, e.g. http://host:11434 (default: ${config.ENV_LLM_BASE_URL}, else the provider default)")
             p.add_argument("--prompt-file", type=Path, help="custom prompt text file for the llm decoder")
+            p.add_argument("--no-verify", action="store_true", help="do not compare the languages after decoding")
+            p.add_argument("--fix-rounds", type=int, default=config.DEFAULT_FIX_ROUNDS, help="times to decode mismatching products again (default: %(default)s)")
         if decode or out_dir:
             p.add_argument("--decoded-dir", type=Path, default=config.DEFAULT_DECODED_DIR, help="directory of decoded JSON files (default: %(default)s)")
         if out_dir:
@@ -67,7 +69,7 @@ def _fetch(a):
 
 
 def _decode(a):
-    return ", ".join(str(p) for p in project.decode(work_dir=a.work_dir, output=a.output, site=a.site, lang=a.lang, decoder=a.decoder, decoded_dir=a.decoded_dir, **_decoder_options(a)))
+    return ", ".join(str(p) for p in project.decode(work_dir=a.work_dir, output=a.output, site=a.site, lang=a.lang, decoder=a.decoder, decoded_dir=a.decoded_dir, verify=not a.no_verify, fix_rounds=a.fix_rounds, **_decoder_options(a)))
 
 
 def _gen_html(a):
@@ -81,7 +83,7 @@ def _gen_dockerfile(a):
         return None  # the Dockerfile itself was the output
     return result
 def _refresh(a):
-    return project.refresh(site=a.site, lang=a.lang, work_dir=a.work_dir, out_dir=a.out_dir, decoder=a.decoder, decoded_dir=a.decoded_dir, **_decoder_options(a))
+    return project.refresh(site=a.site, lang=a.lang, work_dir=a.work_dir, out_dir=a.out_dir, decoder=a.decoder, decoded_dir=a.decoded_dir, verify=not a.no_verify, fix_rounds=a.fix_rounds, **_decoder_options(a))
 
 
 def main(argv: list[str] | None = None) -> int:
