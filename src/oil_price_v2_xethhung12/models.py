@@ -104,6 +104,15 @@ class ProductPrices(BaseModel):
     discounts: list[DiscountRecord]
 
 
+class LanguageMismatch(BaseModel):
+    """A difference between the language versions that could not be resolved; shown on the page."""
+
+    kind: Literal["records", "product_count", "pump_price"]
+    product: str = Field(default="", description="Product names in each language, e.g. 'A / B'. Empty for a count mismatch.")
+    note: str = Field(default="", description="Short explanation, e.g. 'pump price tc: 20.5, en: 20.7'.")
+    only_in: dict[str, list[str]] = Field(default_factory=dict, description="language -> records that only this language has.")
+
+
 class PriceReport(BaseModel):
     """Content of `prices.json`."""
 
@@ -112,6 +121,7 @@ class PriceReport(BaseModel):
     decoder: str
     lang: str = "en"  # language of the source page: "en" or "tc"; the generated page uses it
     products: list[ProductPrices]
+    mismatches: list[LanguageMismatch] = Field(default_factory=list, description="Unresolved differences with the other language(s); empty if they agree.")
 
 
 def validate_report(report: PriceReport) -> None:
@@ -125,5 +135,3 @@ def validate_report(report: PriceReport) -> None:
             v = d.discount_per_litre
             if v is not None and not (0 < v < 100):
                 raise OilPriceError(f"Implausible discount {v} for {p.name} on {d.date}.")
-
-

@@ -8,6 +8,19 @@
   </header>
 
   <main>
+    {% if mismatches %}
+    <section class="card warn">
+      <h2>⚠ {{ t.mismatch_title }}</h2>
+      <p class="hint">{{ t.mismatch_hint }}</p>
+      <ul>
+        {% for m in mismatches %}
+        <li><strong>{{ m.kind }}</strong>{% if m.product %} — {{ m.product }}{% endif %}{% if m.note %}: {{ m.note }}{% endif %}
+          {% for label, items in m.sides %}<div class="mm-side"><em>{{ label }}:</em> {{ items|join("; ") }}</div>{% endfor %}
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
     <section class="card">
       <h2>{{ t.rank_title }}</h2>
       <p class="hint">{{ t.rank_hint }}</p>

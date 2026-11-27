@@ -35,6 +35,10 @@ LABELS: dict[str, dict] = {
         "pts": "{} pts", "per_hkd": " per {}", "per_litre": " per litre", "per_litres": " per {} L",
         "voucher": "{} voucher", "upgrade": "upgrade {} → {}",
         "day": lambda d: d.strftime("%a %d %b"),
+        "mismatch_title": "Language check: the versions differ",
+        "mismatch_hint": "The English and Chinese pages could not be decoded to the same data. Treat the figures below with care; these differences remain:",
+        "mismatch_kinds": {"records": "Different offers", "product_count": "Different number of products", "pump_price": "Different pump price"},
+        "only_in": "only in {}",
     },
     "tc": {
         "html_lang": "zh-HK", "lang_name": "中文", "title": "香港油價折扣", "updated": "更新時間", "source": "資料來源",
@@ -50,6 +54,10 @@ LABELS: dict[str, dict] = {
         "pts": "{}積分", "per_hkd": "／每{}", "per_litre": "／每公升", "per_litres": "／每{}公升",
         "voucher": "{}禮券", "upgrade": "升級 {} → {}",
         "day": lambda d: f"{d.month}月{d.day}日（{'一二三四五六日'[d.weekday()]}）",
+        "mismatch_title": "語言核對：兩個版本不一致",
+        "mismatch_hint": "中、英文頁面未能解析為相同的資料，以下數字請謹慎參考。未解決的差異：",
+        "mismatch_kinds": {"records": "優惠不一致", "product_count": "產品數目不一致", "pump_price": "牌價不一致"},
+        "only_in": "只出現在{}",
     },
 }
 
@@ -139,7 +147,15 @@ def _render_language(report: PriceReport) -> dict:
     rows = [(p, [day_price(p, d, t) for d in dates]) for p in report.products]
     # lowest price first, by the first day; unknown prices last
     rows.sort(key=lambda row: (row[1][0].price is None, row[1][0].price or 0, row[0].name) if dates else (False, 0, row[0].name))
+    mismatches = [
+        {
+            "kind": t["mismatch_kinds"].get(m.kind, m.kind), "product": m.product, "note": m.note,
+            "sides": [(t["only_in"].format(LABELS.get(lg, {}).get("lang_name", lg)), items) for lg, items in m.only_in.items() if items],
+        }
+        for m in report.mismatches
+    ]
     return {
+        "mismatches": mismatches,
         "code": report.lang, "t": t, "report": report, "dates": dates, "day_label": t["day"],
         "products": [(p, prices, grid(p, dates, t)) for p, prices in rows],
     }
