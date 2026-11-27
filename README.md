@@ -65,8 +65,9 @@ Entry point: `oil-price-v2 <command> [options]` (or `python -m oil_price_v2_xeth
 Exit codes: `0` success, `1` runtime failure (network, LLM, validation), `2` usage error.
 
 By default, if the language comparison still finds differences after the fix rounds, `decode`
-writes both reports with the mismatches and `refresh` continues to generate HTML displaying them.
-Use `--strict` to stop instead. Language comparison is skipped for a single language or the rules decoder.
+writes both reports with the mismatches and `refresh` continues to generate HTML showing the differences
+in a table, including offers found only in Chinese or English. Use `--strict` to stop instead. Language
+comparison is skipped for a single language or the rules decoder.
 
 ### LLM configuration
 

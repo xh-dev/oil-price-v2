@@ -12,13 +12,26 @@
     <section class="card warn">
       <h2>⚠ {{ t.mismatch_title }}</h2>
       <p class="hint">{{ t.mismatch_hint }}</p>
-      <ul>
+      <div class="scroll">
+      <table class="mismatch">
+        <thead>
+          <tr>
+            <th>{{ t.mismatch_product }}</th><th>{{ t.mismatch_detail }}</th>
+            <th>{{ t.mismatch_only_tc }}</th><th>{{ t.mismatch_only_en }}</th>
+          </tr>
+        </thead>
+        <tbody>
         {% for m in mismatches %}
-        <li><strong>{{ m.kind }}</strong>{% if m.product %} — {{ m.product }}{% endif %}{% if m.note %}: {{ m.note }}{% endif %}
-          {% for label, items in m.sides %}<div class="mm-side"><em>{{ label }}:</em> {{ items|join("; ") }}</div>{% endfor %}
-        </li>
+          <tr>
+            <th scope="row">{{ m.product }}</th>
+            <td><strong>{{ m.kind }}</strong>{% if m.note %}<small class="mismatch-note">{{ m.note }}</small>{% endif %}</td>
+            <td>{% if m.only_tc %}<ul>{% for item in m.only_tc %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<span class="na">—</span>{% endif %}</td>
+            <td>{% if m.only_en %}<ul>{% for item in m.only_en %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<span class="na">—</span>{% endif %}</td>
+          </tr>
         {% endfor %}
-      </ul>
+        </tbody>
+      </table>
+      </div>
     </section>
     {% endif %}
     <section class="card">
