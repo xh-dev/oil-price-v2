@@ -54,12 +54,20 @@ Entry point: `oil-price-v2 <command> [options]` (or `python -m oil_price_v2_xeth
 | `--decoder` | `llm` | `refresh`, `decode` | `llm` or `rules`. |
 | `--provider`, `--model`, `--base-url` | see below | `refresh`, `decode` | LLM selection. |
 | `--prompt-file` | built-in | `refresh`, `decode` | Replace the LLM prompt text. |
+| `--no-verify` | off | `refresh`, `decode` | Skip the language comparison after decoding. |
+| `--fix-rounds` | `3` | `refresh`, `decode` | Maximum rounds of re-decoding mismatched products. |
+| `--strict` | off | `refresh`, `decode` | Fail without writing decoded files if language differences remain. |
 | `--output` | per command | `decode` (single `--lang` only), `gen-html` | Output file. |
 | `--input` | every `<decoded-dir>/prices.<lang>.json` | `gen-html` | JSON file(s) to render, one per language. |
 | `--out-dir` | `site` | `refresh`, `gen-html` | Directory of the generated site. |
 | `-v` | off | all | Debug logging. |
 
 Exit codes: `0` success, `1` runtime failure (network, LLM, validation), `2` usage error.
+
+By default, if the language comparison still finds differences after the fix rounds, `decode`
+writes both reports with the mismatches and `refresh` continues to generate HTML showing the differences
+in a table, including offers found only in Chinese or English. Use `--strict` to stop instead. Language
+comparison is skipped for a single language or the rules decoder.
 
 ### LLM configuration
 

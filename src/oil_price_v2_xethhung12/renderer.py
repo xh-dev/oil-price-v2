@@ -38,7 +38,8 @@ LABELS: dict[str, dict] = {
         "mismatch_title": "Language check: the versions differ",
         "mismatch_hint": "The English and Chinese pages could not be decoded to the same data. Treat the figures below with care; these differences remain:",
         "mismatch_kinds": {"records": "Different offers", "product_count": "Different number of products", "pump_price": "Different pump price"},
-        "only_in": "only in {}",
+        "mismatch_product": "Product", "mismatch_detail": "Difference", "mismatch_only_tc": "Only in Chinese",
+        "mismatch_only_en": "Only in English", "mismatch_all": "All products",
     },
     "tc": {
         "html_lang": "zh-HK", "lang_name": "中文", "title": "香港油價折扣", "updated": "更新時間", "source": "資料來源",
@@ -57,7 +58,8 @@ LABELS: dict[str, dict] = {
         "mismatch_title": "語言核對：兩個版本不一致",
         "mismatch_hint": "中、英文頁面未能解析為相同的資料，以下數字請謹慎參考。未解決的差異：",
         "mismatch_kinds": {"records": "優惠不一致", "product_count": "產品數目不一致", "pump_price": "牌價不一致"},
-        "only_in": "只出現在{}",
+        "mismatch_product": "產品", "mismatch_detail": "差異", "mismatch_only_tc": "只出現在中文",
+        "mismatch_only_en": "只出現在英文", "mismatch_all": "所有產品",
     },
 }
 
@@ -149,8 +151,11 @@ def _render_language(report: PriceReport) -> dict:
     rows.sort(key=lambda row: (row[1][0].price is None, row[1][0].price or 0, row[0].name) if dates else (False, 0, row[0].name))
     mismatches = [
         {
-            "kind": t["mismatch_kinds"].get(m.kind, m.kind), "product": m.product, "note": m.note,
-            "sides": [(t["only_in"].format(LABELS.get(lg, {}).get("lang_name", lg)), items) for lg, items in m.only_in.items() if items],
+            "kind": t["mismatch_kinds"].get(m.kind, m.kind),
+            "product": m.product or t["mismatch_all"],
+            "note": m.note,
+            "only_tc": m.only_in.get("tc", []),
+            "only_en": m.only_in.get("en", []),
         }
         for m in report.mismatches
     ]
